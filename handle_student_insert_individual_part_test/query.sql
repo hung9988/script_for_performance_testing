@@ -1,0 +1,1 @@
+INSERT INTO enrollments (class_id, student_id) VALUES (1640, 20220558) returning *;
