@@ -3,7 +3,7 @@ import re
 from psycopg2.extensions import parse_dsn, make_dsn
 
 # Connect to your database
-dsn = make_dsn(database="hust_student_manager", user="postgres", password="0000", host="localhost", port="5432")
+dsn = make_dsn(database="student_manager", user="postgres", password="0000", host="localhost", port="5432")
 dsn_dict = parse_dsn(dsn)
 dsn_dict["options"] = "-c client_min_messages=notice"  # Enable notices
 conn = psycopg2.connect(**dsn_dict)
@@ -15,7 +15,7 @@ with open('query.sql', 'r') as f:
     query = f.read()
 
 # Initialize total times for each part
-total_times = [0, 0, 0, 0, 0]
+total_times = [0, 0, 0, 0, 0, 0]
 
 # Execute the query 10 times and calculate the average execution time for each part
 for _ in range(10):
@@ -37,6 +37,8 @@ for notice in notices:
 # Calculate average times
 average_times_ms = [round(total_time * 1000 / 10, 4) for total_time in total_times]
 print("Average execution times for each part: {} ms".format(average_times_ms))
+full_time_ms = sum(average_times_ms)
+print("Full execution time for the query to run: {} ms".format(full_time_ms))
 
 # Close the cursor and connection
 cur.close()

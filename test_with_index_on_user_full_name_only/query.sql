@@ -1,27 +1,5 @@
-(
-  SELECT 
-    users.*, 
-    school_id, 
-    hired_year, 
-    qualification 
-  FROM 
-    teachers 
-    JOIN users ON user_id = teacher_id 
-  WHERE 
-    teacher_id::varchar LIKE '2022%' 
-  OFFSET 0 LIMIT 10
-) 
-UNION 
-(
-  SELECT 
-    users.*, 
-    school_id, 
-    hired_year, 
-    qualification 
-  FROM 
-    teachers 
-    JOIN users ON user_id = teacher_id 
-  WHERE 
-    (first_name ||' '||last_name) LIKE '2022%' 
-  OFFSET 0 LIMIT 10
-);
+ select * from subjects where
+school_id = (select school_id from teachers where teacher_id=current_setting('myapp.user_id')::integer LIMIT 1) 
+and (subject_id LIKE 'AC%' OR subject_name LIKE 'AC%')
+OFFSET 0 LIMIT 10;
+

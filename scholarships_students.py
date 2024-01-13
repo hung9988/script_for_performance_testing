@@ -8,7 +8,7 @@ fake = Faker()
 # Connect to your database
 conn = psycopg2.connect(
     host="localhost",
-    database="hust_student_manager",
+    database="student_manager3",
     user="postgres",
     password="0000"
 )

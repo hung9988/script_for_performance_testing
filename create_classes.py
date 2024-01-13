@@ -6,7 +6,7 @@ import random
 fake = Faker()
 
 # Connect to your postgres DB
-conn = psycopg2.connect("dbname=hust_student_manager user=postgres password=0000 host=localhost")
+conn = psycopg2.connect("dbname=student_manager user=postgres password=0000 host=localhost")
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
@@ -48,7 +48,7 @@ with open('select_commands.sql', 'w') as f:
 
         # Write the command to the file
         f.write(f"""
-            SELECT * FROM add_class({teacher_id}, '{subject_id}', {capacity}, '{day_of_week}', '{location}', '{start_time}'::time, '{end_time}'::time);
+            EXECUTE add_class({teacher_id}, '{subject_id}', {capacity}, '{day_of_week}', '{location}', '{start_time}'::time, '{end_time}'::time);
         """)
 # Close communication with the database
 conn.commit()

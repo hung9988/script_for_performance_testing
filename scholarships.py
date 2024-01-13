@@ -8,7 +8,7 @@ fake = Faker()
 # Connect to your database
 conn = psycopg2.connect(
     host="localhost",
-    database="hust_student_manager",
+    database="student_manager",
     user="postgres",
     password="0000"
 )
@@ -36,9 +36,9 @@ for _ in range(100):
 
     # Generate the INSERT statement for the current scholarship
     insert_statement = cur.mogrify("""
-        INSERT INTO scholarships (enterprise_id, amount, scholarship_description, quantity)
-        VALUES (%s, %s, %s, %s);
-    """, (enterprise_id, amount, scholarship_description, quantity)).decode('utf-8')
+        INSERT INTO scholarships (enterprise_id, amount, scholarship_description)
+        VALUES (%s, %s, %s);
+    """, (enterprise_id, amount, scholarship_description)).decode('utf-8')
 
     # Append the INSERT statement to the sql_query string
     sql_query += insert_statement

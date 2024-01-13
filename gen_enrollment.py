@@ -7,7 +7,7 @@ fake = Faker()
 # Connect to your database
 conn = psycopg2.connect(
     host="localhost",
-    database="hust_student_manager",
+    database="student_manager3",
     user="postgres",
     password="0000"
 )
@@ -57,7 +57,7 @@ for _ in range(1000):
         student_id, program_id = fake.random_element(elements=students)
         if (subject_id, program_id) in subjects_programs and (class_id, student_id) not in inserted_pairs and has_passed_required_subjects(student_id, required_subjects.get(subject_id, [])):
             break
-    values.append(f"({class_id}, {student_id})")
+    cur.execute(f"INSERT INTO enrollments (class_id, student_id) VALUES({class_id}, {student_id});")
     inserted_pairs.add((class_id, student_id))
 
 # Generate a single INSERT statement

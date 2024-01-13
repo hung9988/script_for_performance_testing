@@ -7,7 +7,7 @@ from datetime import datetime, time, timedelta
 fake = Faker()
 
 # Connect to your postgres DB
-conn = psycopg2.connect("dbname=hust_student_manager user=postgres password=0000 host=localhost")
+conn = psycopg2.connect("dbname=student_manager user=postgres password=0000 host=localhost")
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
@@ -50,11 +50,6 @@ for class_id in range(1, 301):
     subject_id = fake.random_element(elements=subjects[school_id])
     external_resources = fake.url()
     capacity = fake.random_int(min=40, max=100)
-    cur.execute("""
-        INSERT INTO classes (class_id, teacher_id, subject_id, external_resources, capacity)
-        VALUES (%s, %s, %s, %s, %s)
-    """, (class_id, teacher_id, subject_id, external_resources, capacity))
-
     day_of_week = fake.random_element(elements=days_of_week)
     location = fake.random_element(elements=locations)
     i+=1
@@ -73,9 +68,10 @@ for class_id in range(1, 301):
     end_time = end_datetime.time()
     used_locations[(day_of_week, location)] = (start_time, end_time)
     cur.execute("""
-        INSERT INTO classes_time_location (class_id, day_of_week, location, start_time, end_time)
-        VALUES (%s, %s, %s, %s, %s)
-    """, (class_id, day_of_week, location, start_time.strftime('%H:%M:%S'), end_time.strftime('%H:%M:%S')))
+        INSERT INTO classes (class_id, teacher_id, subject_id, capacity,day_of_week, location, start_time, end_time)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    """, (class_id, teacher_id, subject_id, capacity,day_of_week, location, start_time.strftime('%H:%M:%S'), end_time.strftime('%H:%M:%S')))
+  
 
 # Close communication with the database
 conn.commit()

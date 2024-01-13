@@ -42,40 +42,57 @@ def create_fake_enterprise(user_id):
     }
 
 # Connect to your postgres DB
-conn = psycopg2.connect("dbname=hust_student_manager user=postgres password=0000 host=localhost")
+# Connect to your postgres DB
+conn = psycopg2.connect("dbname=student_manager user=postgres password=0000 host=localhost")
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
 
-roles = ['student', 'teacher', 'enterprise']
-for _ in range(10000):
-    role = fake.random_element(elements=roles)
-    user = create_fake_user(role)
+# Number of each user type to create
+num_teachers = 500
+num_enterprises = 500
+num_students = 9000
+
+# Create teachers
+for _ in range(num_teachers):
+    user = create_fake_user('teacher')
     cur.execute("""
-        INSERT INTO users (user_id, email, encrypted_password, role, first_name, last_name, date_of_birth)
+        INSERT INTO users (user_id, email, password, role, first_name, last_name, date_of_birth)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
     """, (user['user_id'], user['email'], user['hashed_password'], user['role'], user['first_name'], user['last_name'], user['dob']))
+    teacher = create_fake_teacher(user['user_id'])
+    cur.execute("""
+        INSERT INTO teachers (teacher_id, school_id, hired_year, qualification)
+        VALUES (%s, %s, %s, %s)
+    """, (teacher['teacher_id'], teacher['school_id'], teacher['hired_year'], teacher['qualification']))
 
-    if role == 'teacher':
-        teacher = create_fake_teacher(user['user_id'])
-        cur.execute("""
-            INSERT INTO teachers (teacher_id, school_id, hired_year, qualification)
-            VALUES (%s, %s, %s, %s)
-        """, (teacher['teacher_id'], teacher['school_id'], teacher['hired_year'], teacher['qualification']))
-    elif role == 'student':
-        student = create_fake_student(user['user_id'])
-        cur.execute("""
-            INSERT INTO students (student_id, program_id, enrolled_year)
-            VALUES (%s, %s, %s)
-        """, (student['student_id'], student['program_id'], student['enrolled_year']))
-    elif role == 'enterprise':
-        enterprise = create_fake_enterprise(user['user_id'])
-        cur.execute("""
-            INSERT INTO enterprises (enterprise_id, enterprise_name, contact)
-            VALUES (%s, %s, %s)
-        """, (enterprise['enterprise_id'], enterprise['enterprise_name'], enterprise['contact']))
+# Create enterprises
+for _ in range(num_enterprises):
+    user = create_fake_user('enterprise')
+    cur.execute("""
+        INSERT INTO users (user_id, email, password, role )
+        VALUES (%s, %s, %s, %s)
+    """, (user['user_id'], user['email'], user['hashed_password'], user['role']))
+    enterprise = create_fake_enterprise(user['user_id'])
+    cur.execute("""
+        INSERT INTO enterprises (enterprise_id, enterprise_name, contact)
+        VALUES (%s, %s, %s)
+    """, (enterprise['enterprise_id'], enterprise['enterprise_name'], enterprise['contact']))
 
-# Close communication with the database
+# Create students
+for _ in range(num_students):
+    user = create_fake_user('student')
+    cur.execute("""
+        INSERT INTO users (user_id, email, password, role, first_name, last_name, date_of_birth)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """, (user['user_id'], user['email'], user['hashed_password'], user['role'], user['first_name'], user['last_name'], user['dob']))
+    student = create_fake_student(user['user_id'])
+    cur.execute("""
+        INSERT INTO students (student_id, program_id, enrolled_year)
+        VALUES (%s, %s, %s)
+    """, (student['student_id'], student['program_id'], student['enrolled_year']))
+
+# Commit changes and close connection
 conn.commit()
 cur.close()
 conn.close()

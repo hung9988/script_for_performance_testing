@@ -3,7 +3,7 @@ import re
 import sqlparse
 # Connect to your postgres DB
 conn = psycopg2.connect(
-    dbname="hust_student_manager",
+    dbname="student_manager",
     user="postgres",
     password="0000",
     host="localhost",
@@ -21,8 +21,9 @@ total_time = 0
 formatted_query = sqlparse.format(query, reindent=True, keyword_case='upper')
 
 cur.execute("BEGIN;")
-cur.execute("SET myapp.user_id=20230050;")
-cur.execute("SET myapp.user_role='student';")
+cur.execute("SET myapp.user_id=20220000;")
+cur.execute("SET myapp.user_role='teacher';")
+cur.execute("SET enable_seqscan=off;")
 cur.execute("COMMIT;")
 
 print("The query is: \n")
